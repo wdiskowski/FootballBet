@@ -48,6 +48,7 @@ public class LivescoreInsertServiceImpl implements ILivescoreInsertDataService {
 	private static final String PENALTY_PATTERN = "\\(pen\\.\\)";
 	
 	private static final String SOCCER_URL_PREFIX = "/soccer/";
+	
 //	private static final String EVENT_FAILED_PENALTY = "nogoal";
 //	private static final String EVENT_YELLOW_CARD = "yellow";
 //	private static final String EVENT_RED_CARD = "red";
