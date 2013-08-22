@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- annotation Transaktion -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+	<!-- deklarative Transaktion 
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" read-only="true"
+				propagation="REQUIRED" />
+			<tx:method name="test1*" read-only="false"
+				propagation="REQUIRED" />
+			<tx:method name="save1*" read-only="false"
+				propagation="NEVER" />
+		</tx:attributes>
+	</tx:advice>
+-->
+	<!-- deklarative Transaktion fuer die Service 
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="txServiceMethods"
+			expression="execution(* org.dm.service.*Service*.*(..))" />
+		<aop:advisor advice-ref="txAdvice"
+			pointcut-ref="txServiceMethods" />
+	</aop:config>
+-->
+	<!-- deklarative Transaktion fuer DAOs: fuer die Webanwendung erforderlich 
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="daoMethods"
+			expression="execution(* org.dm.dao.*DAO*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="daoMethods" />
+	</aop:config>
+-->
+	<!-- AOP-Beispiel mit Annotations: die untere Zeile muss für annotierte Tests uncommented werden 
+	<aop:aspectj-autoproxy />
+-->
+	<!--  -->
+	<bean name="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+
+	<!-- Laufzeit-Logger aspect 
+	<bean id="laufzeitLogger" class="org.dm.listener.LaufzeitLogger" />
+-->
+	<!-- Aufruf-Logger aspect 
+	<bean id="methodenLogger" class="org.dm.listener.MethodenLogger" />
+	-->
+	<!-- Logger aspect   
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="statusServiceMothoden"
+			expression="execution(* org.dm.service.*.*(..))" />
+		<aop:pointcut id="daoMethoden"
+			expression="execution(* org.dm.*DAO*.*(..))" />
+
+		<aop:aspect id="profilingAspect" ref="laufzeitLogger">
+			<aop:around method="loggeLaufzeit"
+				pointcut-ref="statusServiceMothoden" />
+			<aop:around method="loggeLaufzeit"
+				pointcut-ref="daoMethoden" />
+		</aop:aspect>
+
+		<aop:aspect id="loggingAspect" ref="methodenLogger">
+			<aop:before method="logMethodEntry"
+				pointcut-ref="statusServiceMothoden" />
+			<aop:after-returning method="logMethodExit"
+				returning="result" pointcut-ref="statusServiceMothoden" />
+			<aop:before method="logMethodEntry"
+				pointcut-ref="daoMethoden" />
+			<aop:after-returning method="logMethodExit"
+				returning="result" pointcut-ref="daoMethoden" />
+		</aop:aspect>
+
+	</aop:config>
+	-->
+</beans>

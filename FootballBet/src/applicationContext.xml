@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Application context definition for PetClinic on Hibernate.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<import resource="databaseContext.xml" />
+	<import resource="transactionContext.xml" />
+	
+	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/> 
+	
+	
+	<bean id="TournamentDAO"
+		class="org.pt.bet.dao.TournamentDAOImpl" />
+	<bean id="GoalDAO"
+		class="org.pt.bet.dao.GoalDAOImpl" />
+	<bean id="ContinentDAO"
+		class="org.pt.bet.dao.ContinentDAOImpl" />
+	<bean id="CompetitionTypeDAO"
+		class="org.pt.bet.dao.CompetitionTypeDAOImpl" />
+	<bean id="CardDAO"
+		class="org.pt.bet.dao.CardDAOImpl" />
+	<bean id="GameDAO"
+		class="org.pt.bet.dao.GameDAOImpl" />
+	<bean id="TeamDAO"
+		class="org.pt.bet.dao.TeamDAOImpl" />
+	<bean id="FailedPenaltyDAO"
+		class="org.pt.bet.dao.FailedPenaltyDAOImpl" />
+	<bean id="CountryDAO"
+		class="org.pt.bet.dao.CountryDAOImpl" />
+	<bean id="BetDAO"
+		class="org.pt.bet.dao.BetDAOImpl" />
+		
+	<bean name="TournamentService"
+		class="org.pt.bet.service.TournamentServiceImpl">
+	</bean>
+	<bean name="CountryService"
+		class="org.pt.bet.service.CountryServiceImpl">
+	</bean>
+	<bean name="TeamService"
+		class="org.pt.bet.service.TeamServiceImpl">
+	</bean>
+	<bean name="GameService"
+		class="org.pt.bet.service.GameServiceImpl">
+	</bean>
+	<bean name="CardService"
+		class="org.pt.bet.service.CardServiceImpl">
+	</bean>
+	<bean name="GoalService"
+		class="org.pt.bet.service.GoalServiceImpl">
+	</bean>
+	<bean name="FailedPenaltyService"
+		class="org.pt.bet.service.FailedPenaltyServiceImpl">
+	</bean>
+	<bean name="LivescoreInsertDataService"
+		class="org.pt.bet.service.LivescoreInsertServiceImpl">
+	</bean>
+	<bean name="GameResultService"
+		class="org.pt.bet.service.GameResultServiceImpl">
+	</bean>
+	
+	<bean name="BetService"
+		class="org.pt.bet.service.BetServiceImpl">
+		<property name="rateFormat">
+			<bean class="java.text.DecimalFormat">
+				<constructor-arg value="#0.000" />
+			</bean>
+		</property>
+		<property name="maxGoalCountIterCount" value="10" />
+	</bean>
+
+	<bean name="LivescoreInsertJob"
+		class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.pt.bet.service.LivescoreInsertJob" />
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="livescoreInsertDataService" value-ref="LivescoreInsertDataService" />
+			</map>
+		</property>
+	</bean>
+	<bean name="cronLivescoreInsertTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="LivescoreInsertJob" />
+		<property name="cronExpression" value="0 0 21 * * ?" />
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronLivescoreInsertTrigger"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Log4 -->
+	<bean id="log4jInitializer"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod">
+			<value>org.springframework.util.Log4jConfigurer.initLogging</value>
+		</property>
+		<property name="arguments">
+			<list>
+				<value>classpath:log4j.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

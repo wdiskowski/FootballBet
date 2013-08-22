@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="LOGFILE" class="org.apache.log4j.RollingFileAppender">
+    	<param name="threshold" value="INFO"/>
+        <!-- <param name="File" value="C:/Program Files/Runtime/Apache Software Foundation/Tomcat 6.0/logs/pmCDI.log"/>-->
+        <param name="File" value="/usr/share/tomcat6/logs/bbCDI.log"/>
+        <param name="Append" value="false"/>
+        <param name="MaxFileSize" value="2MB"/>
+        <param name="MaxBackupIndex" value="3"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH:mm:ss.SSS}; [%-30.30t]; (%-5p); %30.30c.%25.25M (%5L); %x - ;%m%n"/>
+        </layout>
+    </appender>
+
+     <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <param name="threshold" value="INFO"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p [%-30.30t] %30.30c.%25.25M (%5L) %x - %m%n"/>
+        </layout>
+    </appender>
+	<!-- DEBUGGING: DebugInterceptor-Beispiel -->
+	<appender name="DEBUG" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="logs/debug.log"/>
+        <param name="Append" value="true"/>
+        <param name="MaxFileSize" value="2MB"/>
+        <param name="MaxBackupIndex" value="3"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %p %l - %m%n"/>
+        </layout>
+    </appender>
+	
+    <!-- spring -->
+    <logger name="org.springframework">
+        <level value="warn"/>
+    </logger>
+	<logger name="org.springframework.aop.interceptor">
+		<level value="warn"/>
+		<appender-ref ref="DEBUG"/>
+	</logger>
+
+    <!-- log SQL statements (same as show_sql=true) -->
+    <logger name="org.hibernate.SQL">
+        <level value="fatal"/>
+    </logger>
+    <!-- log parameter binding -->
+    <logger name="org.hibernate.type">
+        <level value="fatal"/>
+    </logger>
+    <!-- log ddl statements -->
+    <logger name="org.hibernate.tool.hbm2ddl">
+        <level value="fatal"/>
+    </logger>
+    <!-- hibernate -->
+    <logger name="org.hibernate">
+        <level value="fatal"/>
+    </logger>
+	<logger name="com">
+        <level value="fatal"/>
+    </logger>
+	<logger name="net">
+        <level value="fatal"/>
+    </logger>
+    <!-- codehaus -->
+	<logger name="org.codehaus">
+        <level value="warn"/>
+    </logger>    
+	<logger name="org">
+        <level value="info"/>
+    </logger>    
+    <!--
+      Alle Logmeldungen werden an den Appendern LOGFILE und STDOUT geschickt.
+      Es gibt ein zusaetzliches Threshold im Appender STDOUT
+    -->
+    <root>
+     	<appender-ref ref="DEBUG"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="LOGFILE"/>
+    </root>
+
+</log4j:configuration>

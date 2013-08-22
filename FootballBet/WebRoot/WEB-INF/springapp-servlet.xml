@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Application context definition for PetClinic on Hibernate.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+  
+	<import resource="classpath:applicationContext.xml" />
+
+	<bean id="homePageController" class="org.pt.bet.web.HomePageController">
+		<property name="viewName" value="index" />
+	</bean>
+	<bean id="insertDataController" class="org.pt.bet.web.InsertDataController">
+		<property name="viewName" value="standardPrintWebContent" />
+	</bean>
+	<bean id="statisticController" class="org.pt.bet.web.StatisticController">
+		<property name="viewName" value="statistic" />
+		<property name="updateFormat">
+			<bean class="java.text.SimpleDateFormat">
+				<constructor-arg value="dd.MM.yyyy" />
+			</bean>
+		</property>
+	</bean>
+	 
+	<bean id="teamOptionsController" class="org.pt.bet.web.TeamOptionsController">
+		<property name="viewName" value="standardPrintWebContent" />
+	</bean>
+	<bean id="goalCountController" class="org.pt.bet.web.GoalCountController">
+        <property name="viewName" value="rateTable"/>
+	</bean>
+	<bean id="goalCountWithConditionController" class="org.pt.bet.web.GoalCountWithConditionController">
+        <property name="viewName" value="rateTable"/>
+	</bean>
+	<bean id="redCardWithConditionController" class="org.pt.bet.web.RedCardWithConditionController">
+        <property name="viewName" value="rateTable"/>
+	</bean>
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"><value>org.springframework.web.servlet.view.InternalResourceView</value></property>
+	    <property name="prefix"    value="/WEB-INF/views/" />
+	    <property name="suffix"    value=".jsp" />
+    </bean>
+
+</beans>
